@@ -20,6 +20,11 @@ app.configure(function () {
 
 // routes definitions
 
+// root route
+app.get('/',  function(req, res) {
+    res.send({'version' : '0.0.1'})
+});
+
 // user routes
 app.get('/users', user.findAll);
 app.get('/users/:id', user.findById);
@@ -36,3 +41,6 @@ app.post('/users/:id/profileimage', user.updateProfileImage);
 app.listen(config.SERVER_PORT, function() {
   console.log('Listening on port ' + config.SERVER_PORT + ' ...');
 });
+
+
+module.exports = app;
