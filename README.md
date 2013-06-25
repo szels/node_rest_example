@@ -27,3 +27,8 @@ Example REST API, using node.js, express and mongoose
 
 * delete user with _id 12345678  
  `curl -i -X DELETE http://localhost:3000/users/12345678`
+
+
+## Testing the API using mocha
+
+`npm test`
