@@ -58,12 +58,12 @@ exports.add = function(req, res) {
     });
 
     user.save(function (err) {
-        if (err) {
+        if (!err) {
+            console.log('Success: ' + JSON.stringify(user));
+            res.send(user);
+        } else {
             console.log(err);
             res.send({'error':'An error has occurred'});
-        } else {
-            console.log('Success: ' + JSON.stringify(result));
-            res.send(user);
         }
     });
 };
