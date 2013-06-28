@@ -33,6 +33,22 @@ exports.findById = function(req, res) {
 };
 
 
+// find user by username
+exports.findByUsername = function(req, res) {
+    var username = req.params.username;
+    console.log('Retrieving user: ' + username);
+
+    User.findOne({username: username}, function (err, user) {
+        if (!err) {
+            console.log('Founded user: ' + JSON.stringify(user));
+            res.send(user);
+        } else {
+            console.log(err);
+        }
+    });
+};
+
+
 // get all users
 exports.findAll = function(req, res) {
     User.find(function(err, users) {
@@ -128,4 +144,20 @@ exports.updateProfileImage = function(req, res) {
         res.end();
     });
 };
+
+
+// validating user credentials
+exports.isValidUser = function(username, password, callback) {
+    User.findOne({username: username}, function (err, user) {
+        if (!err) {
+            console.log('Founded user: ' + JSON.stringify(user));
+            var passwordHash = crypto.createHash('sha256').update(password).digest('hex');
+
+            callback( passwordHash == user.password );
+        } else {
+            console.log(err);
+            callback(false);
+        }
+    });
+}
 

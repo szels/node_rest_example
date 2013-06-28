@@ -1,9 +1,7 @@
 
 var config = require('./config'),
-    
     express = require('express'),
-    
-    user = require('./routes/user'); 
+    user = require('./routes/user');
 
 var app = express();
  
@@ -17,6 +15,13 @@ app.configure(function () {
 });
 
 
+// authentication
+var auth = express.basicAuth(function(username, password, callback) {
+    user.isValidUser(username, password, function(result) {     
+        callback(null /* error */, result);
+    });
+});
+
 
 // routes definitions
 
@@ -26,13 +31,14 @@ app.get('/',  function(req, res) {
 });
 
 // user routes
-app.get('/users', user.findAll);
-app.get('/users/:id', user.findById);
+app.get('/users', auth, user.findAll);
+// app.get('/users/:id', user.findById);
+app.get('/users/:username', user.findByUsername);
 app.post('/users', user.add);
-app.put('/users/:id', user.update);
-app.delete('/users/:id', user.delete);
+app.put('/users/:id', auth, user.update);
+app.delete('/users/:id', auth, user.delete);
 
-app.post('/users/:id/profileimage', user.updateProfileImage);
+app.post('/users/:id/profileimage', auth, user.updateProfileImage);
 
 
 
