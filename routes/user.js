@@ -1,5 +1,5 @@
 var config = require('../config'),
-    crypto = require('crypto'),
+    hash = require('../utils/hash'),
     fs = require('fs'),
     mongoose = require('mongoose');
 
@@ -69,7 +69,7 @@ exports.add = function(req, res) {
     var user = new User({
         username: req.body.username,
         email: req.body.email,
-        password: crypto.createHash('sha256').update(req.body.password).digest('hex'),
+        password: hash.generateSHA256(req.body.password),
         created: Date.now()
     });
 
@@ -95,7 +95,7 @@ exports.update = function(req, res) {
     User.findById(id, function (err, user) {
         user.username = req.body.username;
         user.email = req.body.email;
-        user.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+        user.password = hash.generateSHA256(req.body.password);
 
         user.save(function (err) {
             if (!err) {
@@ -151,7 +151,7 @@ exports.isValidUser = function(username, password, callback) {
     User.findOne({username: username}, function (err, user) {
         if (!err) {
             console.log('Founded user: ' + JSON.stringify(user));
-            var passwordHash = crypto.createHash('sha256').update(password).digest('hex');
+            var passwordHash = hash.generateSHA256(password);
 
             callback( passwordHash == user.password );
         } else {
