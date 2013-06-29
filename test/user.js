@@ -4,6 +4,14 @@ var request = require('supertest'),
 var app = require('../app.js');
 
 
+// cleaning collection
+var mongoose = require('mongoose');
+mongoose.connection.collections['users'].drop( function(err) {
+    console.log('collection dropped');
+});
+
+
+
 describe('GET', function(){
   it('responds with a version number in JSON', function(done){
     request(app)
@@ -32,8 +40,17 @@ describe('GET', function(){
     request(app)
     .get('/users')
     .set('Accept', 'application/json')
+    .expect(401, done);
+  });
+});
+
+
+describe('GET', function(){
+  it('responds with a single users in JSON', function(done){
+    request(app)
+    .get('/users/test')
+    .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
     .expect(200, done);
   });
 });
-
